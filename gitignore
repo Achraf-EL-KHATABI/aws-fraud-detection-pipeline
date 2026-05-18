@@ -1,0 +1,124 @@
+# ============================================
+# Terraform
+# ============================================
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files (NEVER commit state — it can contain secrets)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Plan output files
+*.tfplan
+*.tfplan.*
+tfplan
+plan.out
+
+# Variables files (may contain secrets)
+*.tfvars
+*.tfvars.json
+!example.tfvars
+!terraform.tfvars.example
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Lock file: COMMIT IT for apps, ignore for modules. Here we COMMIT it.
+# .terraform.lock.hcl  ← intentionally NOT ignored
+
+# ============================================
+# AWS
+# ============================================
+.aws/
+aws-credentials*
+*.pem
+*.ppk
+
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ============================================
+# Datasets (don't commit data to Git — too heavy + sometimes sensitive)
+# ============================================
+data/
+datasets/
+*.csv
+*.parquet
+*.json.gz
+*.zip
+!docs/**/*.csv
+!example_data/**/*.csv
+
+# ============================================
+# IDEs & Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Logs & temp
+# ============================================
+*.log
+logs/
+tmp/
+temp/
+
+# ============================================
+# Secrets (paranoid mode)
+# ============================================
+*.secret
+secrets.yml
+secrets.yaml
+.env.local
+.env.*.local
