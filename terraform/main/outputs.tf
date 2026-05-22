@@ -26,4 +26,15 @@ output "name_prefix" {
   value       = local.name_prefix
 }
 
-# (Bucket ARNs, Glue job name, Step Functions ARN... will be added later.)
+###############################################################################
+# Data lake outputs (surfaced from the s3-datalake module)
+###############################################################################
+output "datalake_bucket_names" {
+  description = "Map of data lake zone => bucket name."
+  value       = module.s3_datalake.bucket_names
+}
+
+output "datalake_bucket_arns" {
+  description = "Map of data lake zone => bucket ARN."
+  value       = module.s3_datalake.bucket_arns
+}
