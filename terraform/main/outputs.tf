@@ -38,3 +38,21 @@ output "datalake_bucket_arns" {
   description = "Map of data lake zone => bucket ARN."
   value       = module.s3_datalake.bucket_arns
 }
+
+###############################################################################
+# Glue outputs (surfaced from the glue module)
+###############################################################################
+output "glue_job_name" {
+  description = "Name of the Glue ETL job (use it to start the job via CLI/console)."
+  value       = module.glue.glue_job_name
+}
+
+output "glue_role_arn" {
+  description = "ARN of the IAM role assumed by the Glue ETL job."
+  value       = module.glue.glue_role_arn
+}
+
+output "glue_script_uri" {
+  description = "S3 URI where the PySpark script is hosted for Glue."
+  value       = module.glue.script_s3_uri
+}

@@ -152,3 +152,69 @@ resource "aws_iam_role_policy_attachment" "glue_data_access" {
   role       = aws_iam_role.glue_job.name
   policy_arn = aws_iam_policy.glue_data_access.arn
 }
+
+
+# -----------------------------------------------------------------------------
+# 5. The Glue Job itself
+# -----------------------------------------------------------------------------
+# This is the resource that "exists" in AWS as a runnable job. Once created,
+# it can be started from the console, the CLI, Step Functions, or EventBridge.
+#
+# Key configuration:
+#   - command.script_location: S3 URI of the PySpark script (from step 1).
+#   - command.python_version: must be "3" for Glue 4.0.
+#   - glue_version: pins the Spark/Python runtime.
+#   - worker_type + number_of_workers: how big and how many Spark executors.
+#   - default_arguments: parameters injected into our PySpark script.
+#
+# Note on the script_location dependency:
+#   We pass aws_s3_object.fraud_etl_script.key (not just the literal key)
+#   so Terraform infers the dependency: the script MUST be uploaded before
+#   the job is created/updated. This avoids race conditions on first apply.
+resource "aws_glue_job" "fraud_etl" {
+  name        = "${var.name_prefix}-fraud-etl"
+  description = "Scores transactions with fraud-detection rules; raw -> curated."
+  role_arn    = aws_iam_role.glue_job.arn
+
+  glue_version      = var.glue_version
+  worker_type       = var.worker_type
+  number_of_workers = var.number_of_workers
+  timeout           = var.job_timeout_minutes
+
+  command {
+    name            = "glueetl" # 'glueetl' = Spark job (vs 'pythonshell')
+    script_location = "s3://${var.script_bucket_name}/${aws_s3_object.fraud_etl_script.key}"
+    python_version  = "3"
+  }
+
+  # Arguments injected into the PySpark script. Glue conventions:
+  #   - Keys MUST start with "--".
+  #   - "--JOB_NAME" is added automatically by Glue, no need to set it here.
+  #   - Other AWS-recommended defaults below enable logging, metrics, etc.
+  default_arguments = {
+    # Our script's custom inputs
+    "--raw_bucket"     = var.raw_bucket_name
+    "--curated_bucket" = var.curated_bucket_name
+    "--source_prefix"  = var.source_prefix
+
+    # AWS-recommended defaults for Glue 4.0
+    "--enable-metrics"                   = "true"
+    "--enable-continuous-cloudwatch-log" = "true"
+    "--enable-spark-ui"                  = "false"
+    "--job-language"                     = "python"
+    "--TempDir"                          = "s3://${var.curated_bucket_name}/_glue_temp/"
+  }
+
+  # Retry once on transient failure (network glitch, spot interruption, etc.).
+  execution_property {
+    max_concurrent_runs = 1
+  }
+
+  max_retries = 1
+
+  tags = merge(var.tags, {
+    Name      = "${var.name_prefix}-fraud-etl"
+    Component = "glue"
+  })
+}
+
