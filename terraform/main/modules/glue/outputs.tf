@@ -20,3 +20,15 @@ output "script_s3_uri" {
   description = "S3 URI where the Glue Job will read its PySpark script from."
   value       = "s3://${var.script_bucket_name}/${aws_s3_object.fraud_etl_script.key}"
 }
+
+
+output "glue_job_name" {
+  description = "Name of the Glue ETL job. Used to start it from the CLI or Step Functions."
+  value       = aws_glue_job.fraud_etl.name
+}
+
+output "glue_job_arn" {
+  description = "ARN of the Glue ETL job."
+  value       = aws_glue_job.fraud_etl.arn
+}
+

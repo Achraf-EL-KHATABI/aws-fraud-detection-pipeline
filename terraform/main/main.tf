@@ -48,3 +48,29 @@ module "s3_datalake" {
   # Extra tags merged on top of the provider's default_tags.
   tags = local.common_tags
 }
+
+###############################################################################
+# Glue ETL job — scores transactions in raw and writes results to curated
+###############################################################################
+module "glue" {
+  source = "./modules/glue"
+
+  name_prefix = local.name_prefix
+  account_id  = local.account_id
+  aws_region  = var.aws_region
+
+  # Wire the data lake buckets created by the s3-datalake module.
+  raw_bucket_name     = module.s3_datalake.raw_bucket_name
+  raw_bucket_arn      = module.s3_datalake.raw_bucket_arn
+  curated_bucket_name = module.s3_datalake.curated_bucket_name
+  curated_bucket_arn  = module.s3_datalake.curated_bucket_arn
+
+  # We reuse the raw bucket for storing the script (one bucket fewer to manage).
+  # In a strict prod setup you'd use a dedicated artifacts bucket.
+  script_bucket_name = module.s3_datalake.raw_bucket_name
+  script_bucket_arn  = module.s3_datalake.raw_bucket_arn
+  script_local_path  = "${path.root}/../../glue_jobs/fraud_etl_glue.py"
+
+  tags = local.common_tags
+}
+
