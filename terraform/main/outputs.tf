@@ -56,3 +56,16 @@ output "glue_script_uri" {
   description = "S3 URI where the PySpark script is hosted for Glue."
   value       = module.glue.script_s3_uri
 }
+
+###############################################################################
+# Glue Catalog outputs (surfaced from the glue-catalog module)
+###############################################################################
+output "glue_database_name" {
+  description = "Glue Catalog database name (used in Athena queries: SELECT ... FROM <db>.transactions)."
+  value       = module.glue_catalog.database_name
+}
+
+output "glue_crawler_name" {
+  description = "Name of the Crawler. Start it with: aws glue start-crawler --name <this>."
+  value       = module.glue_catalog.crawler_name
+}

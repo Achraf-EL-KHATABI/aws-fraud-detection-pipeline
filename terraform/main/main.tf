@@ -74,3 +74,18 @@ module "glue" {
   tags = local.common_tags
 }
 
+###############################################################################
+# Glue Data Catalog + Crawler — makes the curated zone queryable by Athena
+###############################################################################
+module "glue_catalog" {
+  source = "./modules/glue-catalog"
+
+  name_prefix = local.name_prefix
+  account_id  = local.account_id
+  aws_region  = var.aws_region
+
+  curated_bucket_name = module.s3_datalake.curated_bucket_name
+  curated_bucket_arn  = module.s3_datalake.curated_bucket_arn
+
+  tags = local.common_tags
+}
