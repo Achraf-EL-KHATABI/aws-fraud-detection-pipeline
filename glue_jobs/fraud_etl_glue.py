@@ -92,20 +92,9 @@ def main():
     print(f"[glue] loaded {df.count():,} rows")
 
     # --------------------------------------------------------------- build ts
-    # Compose a timestamp from year/month/day + the HH:MM `time` string.
-    df = df.withColumn(
-        "event_ts",
-        F.to_timestamp(
-            F.concat_ws(
-                " ",
-                F.concat_ws("-",
-                            F.col("year").cast("string"),
-                            F.lpad(F.col("month").cast("string"), 2, "0"),
-                            F.lpad(F.col("day").cast("string"), 2, "0")),
-                F.col("time"),
-            ),
-            "yyyy-MM-dd HH:mm",
-        ),
+    # Extrait hour/minute du timestamp déjà parsé.
+    df = df.withColumn("event_ts",
+        F.expr("make_timestamp(CAST(year AS INT), CAST(month AS INT), CAST(day AS INT), hour(time), minute(time), 0)")
     )
 
     # ------------------------------------------------------------ R1 amount

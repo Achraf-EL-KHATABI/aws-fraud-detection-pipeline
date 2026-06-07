@@ -89,3 +89,15 @@ module "glue_catalog" {
 
   tags = local.common_tags
 }
+
+###############################################################################
+# Athena — interactive SQL on top of the curated Parquet zone
+###############################################################################
+module "athena" {
+  source = "./modules/athena"
+
+  name_prefix = local.name_prefix
+  account_id  = local.account_id
+
+  tags = local.common_tags
+}
