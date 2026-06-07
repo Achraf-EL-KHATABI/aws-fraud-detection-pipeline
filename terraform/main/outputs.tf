@@ -69,3 +69,17 @@ output "glue_crawler_name" {
   description = "Name of the Crawler. Start it with: aws glue start-crawler --name <this>."
   value       = module.glue_catalog.crawler_name
 }
+
+
+###############################################################################
+# Athena outputs (surfaced from the athena module)
+###############################################################################
+output "athena_workgroup_name" {
+  description = "Athena workgroup to select before running queries."
+  value       = module.athena.workgroup_name
+}
+
+output "athena_results_location" {
+  description = "S3 URI where Athena writes query results."
+  value       = module.athena.results_location
+}
