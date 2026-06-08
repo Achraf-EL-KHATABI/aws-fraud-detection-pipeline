@@ -83,3 +83,16 @@ output "athena_results_location" {
   description = "S3 URI where Athena writes query results."
   value       = module.athena.results_location
 }
+
+###############################################################################
+# Step Functions outputs (surfaced from the stepfunctions module)
+###############################################################################
+output "stepfunctions_state_machine_arn" {
+  description = "ARN of the orchestrator state machine."
+  value       = module.stepfunctions.state_machine_arn
+}
+
+output "stepfunctions_state_machine_name" {
+  description = "Name of the orchestrator state machine."
+  value       = module.stepfunctions.state_machine_name
+}
