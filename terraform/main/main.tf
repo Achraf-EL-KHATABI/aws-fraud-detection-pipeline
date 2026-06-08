@@ -101,3 +101,19 @@ module "athena" {
 
   tags = local.common_tags
 }
+
+###############################################################################
+# Step Functions — daily batch orchestration (run Glue Job, then Crawler)
+###############################################################################
+module "stepfunctions" {
+  source = "./modules/stepfunctions"
+
+  name_prefix = local.name_prefix
+  account_id  = local.account_id
+  aws_region  = var.aws_region
+
+  glue_job_name     = module.glue.glue_job_name
+  glue_crawler_name = module.glue_catalog.crawler_name
+
+  tags = local.common_tags
+}
