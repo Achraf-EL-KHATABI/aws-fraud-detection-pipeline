@@ -117,3 +117,17 @@ module "stepfunctions" {
 
   tags = local.common_tags
 }
+
+###############################################################################
+# EventBridge — daily cron that triggers the orchestrator state machine
+###############################################################################
+module "eventbridge" {
+  source = "./modules/eventbridge"
+
+  name_prefix       = local.name_prefix
+  state_machine_arn = module.stepfunctions.state_machine_arn
+
+  # Default: every day at 02:00 UTC. Disable here without destroying:
+  # enabled = false
+  tags = local.common_tags
+}
