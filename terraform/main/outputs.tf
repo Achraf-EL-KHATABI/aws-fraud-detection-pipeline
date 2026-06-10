@@ -96,3 +96,16 @@ output "stepfunctions_state_machine_name" {
   description = "Name of the orchestrator state machine."
   value       = module.stepfunctions.state_machine_name
 }
+
+###############################################################################
+# EventBridge outputs (surfaced from the eventbridge module)
+###############################################################################
+output "eventbridge_rule_name" {
+  description = "Name of the daily EventBridge rule."
+  value       = module.eventbridge.rule_name
+}
+
+output "eventbridge_schedule_expression" {
+  description = "Effective cron schedule applied to the rule."
+  value       = module.eventbridge.schedule_expression
+}
